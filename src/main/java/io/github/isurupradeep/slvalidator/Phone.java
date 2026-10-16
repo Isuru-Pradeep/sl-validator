@@ -2,7 +2,9 @@ package io.github.isurupradeep.slvalidator;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,10 +20,8 @@ public final class Phone {
     private static final Set<String> MOBILE_PREFIXES = unmodifiable(
             "70", "71", "72", "74", "75", "76", "77", "78");
 
-    /** Landline area codes after the leading 0. */
-    private static final Set<String> AREA_CODES = unmodifiable(
-            "11", "21", "23", "24", "25", "26", "27", "31", "32", "33", "34", "35", "36", "37", "38",
-            "41", "45", "47", "51", "52", "54", "55", "57", "63", "65", "66", "67", "81", "91");
+    /** Landline area codes after the leading 0, mapped to the district of the exchange town. */
+    private static final Map<String, District> AREA_CODES = areaCodes();
 
     private Phone() {
     }
@@ -71,10 +71,27 @@ public final class Phone {
         if (MOBILE_PREFIXES.contains(prefix)) {
             return PhoneType.MOBILE;
         }
-        if (AREA_CODES.contains(prefix)) {
+        if (AREA_CODES.containsKey(prefix)) {
             return PhoneType.LANDLINE;
         }
         return null;
+    }
+
+    /**
+     * Returns the district of a landline number's area code, e.g. {@code "0812234567" -> KANDY}.
+     *
+     * <p>Area codes belong to exchange towns, and an exchange can serve neighbouring areas
+     * across a district border, so treat the result as approximate. Mobile numbers are not
+     * tied to a place and return {@code null}.</p>
+     *
+     * @param phone the phone number in any accepted form
+     * @return the district, or {@code null} if the number is not a valid landline
+     */
+    public static District districtOf(String phone) {
+        if (typeOf(phone) != PhoneType.LANDLINE) {
+            return null;
+        }
+        return AREA_CODES.get(nationalNumber(phone).substring(0, 2));
     }
 
     /**
@@ -125,6 +142,40 @@ public final class Phone {
             return null;
         }
         return d;
+    }
+
+    private static Map<String, District> areaCodes() {
+        Map<String, District> m = new HashMap<>();
+        m.put("11", District.COLOMBO);       // Colombo
+        m.put("21", District.JAFFNA);        // Jaffna
+        m.put("23", District.MANNAR);        // Mannar
+        m.put("24", District.VAVUNIYA);      // Vavuniya
+        m.put("25", District.ANURADHAPURA);  // Anuradhapura
+        m.put("26", District.TRINCOMALEE);   // Trincomalee
+        m.put("27", District.POLONNARUWA);   // Polonnaruwa
+        m.put("31", District.GAMPAHA);       // Negombo
+        m.put("32", District.PUTTALAM);      // Chilaw
+        m.put("33", District.GAMPAHA);       // Gampaha
+        m.put("34", District.KALUTARA);      // Kalutara
+        m.put("35", District.KEGALLE);       // Kegalle
+        m.put("36", District.COLOMBO);       // Avissawella
+        m.put("37", District.KURUNEGALA);    // Kurunegala
+        m.put("38", District.KALUTARA);      // Panadura
+        m.put("41", District.MATARA);        // Matara
+        m.put("45", District.RATNAPURA);     // Ratnapura
+        m.put("47", District.HAMBANTOTA);    // Hambantota
+        m.put("51", District.NUWARA_ELIYA);  // Hatton
+        m.put("52", District.NUWARA_ELIYA);  // Nuwara Eliya
+        m.put("54", District.KANDY);         // Nawalapitiya
+        m.put("55", District.BADULLA);       // Badulla
+        m.put("57", District.BADULLA);       // Bandarawela
+        m.put("63", District.AMPARA);        // Ampara
+        m.put("65", District.BATTICALOA);    // Batticaloa
+        m.put("66", District.MATALE);        // Matale
+        m.put("67", District.AMPARA);        // Kalmunai
+        m.put("81", District.KANDY);         // Kandy
+        m.put("91", District.GALLE);         // Galle
+        return Collections.unmodifiableMap(m);
     }
 
     private static Set<String> unmodifiable(String... values) {

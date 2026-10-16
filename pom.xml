@@ -6,11 +6,11 @@
 
     <groupId>io.github.isuru-pradeep</groupId>
     <artifactId>sl-validator</artifactId>
-    <version>0.1.1</version>
+    <version>0.2.0</version>
     <packaging>jar</packaging>
 
     <name>SL Validator</name>
-    <description>Zero-dependency Java library for validating and parsing Sri Lankan NIC numbers and phone numbers.</description>
+    <description>Zero-dependency Java library for validating and parsing Sri Lankan NIC numbers, phone numbers, vehicle number plates and postal codes.</description>
     <url>https://github.com/Isuru-Pradeep/sl-validator</url>
 
     <licenses>

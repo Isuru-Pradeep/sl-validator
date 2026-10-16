@@ -85,6 +85,30 @@ public final class Nic {
     }
 
     /**
+     * Checks whether a NIC is valid and encodes the given date of birth, e.g. to cross-check
+     * a form where the NIC and birth date are entered separately.
+     *
+     * @param nic the NIC number, old or new format
+     * @param dateOfBirth the expected date of birth
+     * @return true if the NIC is valid and its date of birth equals {@code dateOfBirth}
+     */
+    public static boolean matches(String nic, LocalDate dateOfBirth) {
+        return isValid(nic) && parse(nic).getDateOfBirth().equals(dateOfBirth);
+    }
+
+    /**
+     * Checks whether a NIC is valid and encodes the given date of birth and gender.
+     *
+     * @param nic the NIC number, old or new format
+     * @param dateOfBirth the expected date of birth
+     * @param gender the expected gender
+     * @return true if the NIC is valid and both values match
+     */
+    public static boolean matches(String nic, LocalDate dateOfBirth, Gender gender) {
+        return matches(nic, dateOfBirth) && parse(nic).getGender() == gender;
+    }
+
+    /**
      * Converts an old NIC to the new 12-digit format, e.g. {@code 853400937V -> 198534000937}.
      * A new NIC is returned unchanged.
      *

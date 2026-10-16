@@ -164,6 +164,30 @@ class NicTest {
     }
 
     @Test
+    void matchesDateOfBirthAndGender() {
+        LocalDate dob = LocalDate.of(1985, 12, 5);
+        assertTrue(Nic.matches("853400937V", dob));
+        assertTrue(Nic.matches("198534000937", dob, Gender.MALE));
+        assertFalse(Nic.matches("853400937V", dob, Gender.FEMALE));
+        assertFalse(Nic.matches("853400937V", dob.plusDays(1)));
+    }
+
+    @Test
+    void matchesIsFalseForInvalidNicOrNullValues() {
+        assertFalse(Nic.matches("123", LocalDate.of(1985, 12, 5)));
+        assertFalse(Nic.matches(null, LocalDate.of(1985, 12, 5)));
+        assertFalse(Nic.matches("853400937V", null));
+        assertFalse(Nic.matches("853400937V", LocalDate.of(1985, 12, 5), null));
+    }
+
+    @Test
+    void checksAdulthoodOnEighteenthBirthday() {
+        NicInfo info = Nic.parse("200012345678"); // born 2000-05-02
+        assertFalse(info.isAdult(LocalDate.of(2018, 5, 1)));
+        assertTrue(info.isAdult(LocalDate.of(2018, 5, 2)));
+    }
+
+    @Test
     void toOldFormatKeepsOldNicUnchanged() {
         assertEquals("853400937X", Nic.toOldFormat("853400937X", 'V'));
     }
