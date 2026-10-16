@@ -23,13 +23,13 @@ Zero-dependency Java library for validating and parsing **Sri Lankan NIC numbers
 <dependency>
     <groupId>io.github.isuru-pradeep</groupId>
     <artifactId>sl-validator</artifactId>
-    <version>0.1.1</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
 ### Gradle
 ```groovy
-implementation 'io.github.isuru-pradeep:sl-validator:0.1.1'
+implementation 'io.github.isuru-pradeep:sl-validator:0.2.0'
 ```
 
 ### JitPack
@@ -48,7 +48,7 @@ Maven:
 <dependency>
     <groupId>com.github.Isuru-Pradeep</groupId>
     <artifactId>sl-validator</artifactId>
-    <version>v0.1.1</version>
+    <version>v0.2.0</version>
 </dependency>
 ```
 
@@ -60,7 +60,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.Isuru-Pradeep:sl-validator:v0.1.1'
+    implementation 'com.github.Isuru-Pradeep:sl-validator:v0.2.0'
 }
 ```
 
