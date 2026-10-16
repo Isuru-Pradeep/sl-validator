@@ -188,6 +188,21 @@ class NicTest {
     }
 
     @Test
+    void referenceDateDecidesWhatIsInTheFuture() {
+        LocalDate dob = LocalDate.of(2010, 6, 15);
+        String nic = "201016700000"; // day 167 = June 15
+        assertEquals(dob, Nic.parse(nic, dob).getDateOfBirth());
+        assertTrue(Nic.isValid(nic, dob));
+        assertFalse(Nic.isValid(nic, dob.minusDays(1)));
+        assertThrows(InvalidNicException.class, () -> Nic.parse(nic, dob.minusDays(1)));
+    }
+
+    @Test
+    void referenceDateMustNotBeNull() {
+        assertThrows(NullPointerException.class, () -> Nic.parse("853400937V", null));
+    }
+
+    @Test
     void toOldFormatKeepsOldNicUnchanged() {
         assertEquals("853400937X", Nic.toOldFormat("853400937X", 'V'));
     }

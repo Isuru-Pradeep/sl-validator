@@ -116,6 +116,32 @@ public final class Phone {
         return "0" + validNationalNumber(phone);
     }
 
+    /**
+     * Formats for display in Sri Lanka, e.g. {@code "+94771234567" -> "077 123 4567"}.
+     *
+     * @param phone the phone number in any accepted form
+     * @return the number grouped as {@code 0XX XXX XXXX}
+     * @throws IllegalArgumentException if the number is invalid
+     */
+    public static String toNational(String phone) {
+        return "0" + grouped(validNationalNumber(phone));
+    }
+
+    /**
+     * Formats for display abroad, e.g. {@code "0771234567" -> "+94 77 123 4567"}.
+     *
+     * @param phone the phone number in any accepted form
+     * @return the number grouped as {@code +94 XX XXX XXXX}
+     * @throws IllegalArgumentException if the number is invalid
+     */
+    public static String toInternational(String phone) {
+        return "+94 " + grouped(validNationalNumber(phone));
+    }
+
+    private static String grouped(String n) {
+        return n.substring(0, 2) + " " + n.substring(2, 5) + " " + n.substring(5);
+    }
+
     private static String validNationalNumber(String phone) {
         if (!isValid(phone)) {
             throw new IllegalArgumentException("Not a valid Sri Lankan phone number: " + phone);
@@ -125,10 +151,11 @@ public final class Phone {
 
     /** Strips formatting and prefixes, returning the 9-digit national number or null. */
     private static String nationalNumber(String phone) {
-        if (phone == null) {
+        String cleaned = Inputs.clean(phone);
+        if (cleaned == null) {
             return null;
         }
-        String d = phone.trim().replaceAll("[\\s\\-().]", "");
+        String d = cleaned.replaceAll("[\\s\\-().]", "");
         if (d.startsWith("+94")) {
             d = d.substring(3);
         } else if (d.startsWith("0094")) {

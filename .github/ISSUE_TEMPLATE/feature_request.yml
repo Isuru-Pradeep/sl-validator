@@ -1,0 +1,21 @@
+name: Feature request
+description: Suggest a new Sri Lankan validator or an improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What should the library do?
+      placeholder: "Validate Sri Lankan passport numbers"
+    validations:
+      required: true
+  - type: textarea
+    id: format
+    attributes:
+      label: Format rules and examples
+      description: The format, with made-up examples. Do not include real personal numbers.
+  - type: input
+    id: source
+    attributes:
+      label: Official source for the format
+      description: Validators are only added for formats that can be verified

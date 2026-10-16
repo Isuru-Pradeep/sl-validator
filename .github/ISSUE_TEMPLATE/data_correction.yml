@@ -1,0 +1,29 @@
+name: Data correction
+description: A rule or reference value (area code, prefix, name, translation) is wrong or out of date
+labels: [data]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping keep the reference data accurate. A link to an official source
+        (TRCSL, Sri Lanka Post, DMT, DRP, Department of Census and Statistics, ...) makes a correction much faster to accept.
+  - type: input
+    id: item
+    attributes:
+      label: What is wrong
+      placeholder: "Area code 036 maps to COLOMBO but should be ..."
+    validations:
+      required: true
+  - type: textarea
+    id: correct
+    attributes:
+      label: Correct value
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source
+      description: Link to an official or authoritative source
+    validations:
+      required: true
