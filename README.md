@@ -29,6 +29,38 @@ Zero-dependency Java library for validating and parsing **Sri Lankan NIC numbers
 implementation 'io.github.isuru-pradeep:sl-validator:0.1.0'
 ```
 
+### JitPack
+
+[![JitPack](https://jitpack.io/v/Isuru-Pradeep/sl-validator.svg)](https://jitpack.io/#Isuru-Pradeep/sl-validator)
+
+Maven:
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.github.Isuru-Pradeep</groupId>
+    <artifactId>sl-validator</artifactId>
+    <version>v0.1.0</version>
+</dependency>
+```
+
+Gradle:
+```groovy
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.Isuru-Pradeep:sl-validator:v0.1.0'
+}
+```
+
 ## Usage
 
 ### NIC
