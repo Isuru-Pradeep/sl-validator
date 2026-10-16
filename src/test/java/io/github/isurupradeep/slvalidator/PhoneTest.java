@@ -59,6 +59,16 @@ class PhoneTest {
     }
 
     @Test
+    void formatsForDisplay() {
+        assertEquals("077 123 4567", Phone.toNational("+94771234567"));
+        assertEquals("011 234 5678", Phone.toNational("0112345678"));
+        assertEquals("+94 77 123 4567", Phone.toInternational("0771234567"));
+        assertEquals("+94 81 223 4567", Phone.toInternational("081-223-4567"));
+        assertThrows(IllegalArgumentException.class, () -> Phone.toNational("0731234567"));
+        assertThrows(IllegalArgumentException.class, () -> Phone.toInternational(null));
+    }
+
+    @Test
     void normalizeRejectsInvalid() {
         assertThrows(IllegalArgumentException.class, () -> Phone.toE164("0731234567"));
         assertThrows(IllegalArgumentException.class, () -> Phone.toLocal("0731234567"));

@@ -4,6 +4,21 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - Unreleased
+
+### Added
+- `Nic.parse(nic, today)` and `Nic.isValid(nic, today)` to fix the date used for the future-birth-date check.
+- `Phone.toNational` (`077 123 4567`) and `Phone.toInternational` (`+94 77 123 4567`) display formats.
+- Sinhala and Tamil names on `Province` and `District`, and `Province.fromName` / `District.fromName`
+  lookups that accept English, Sinhala or Tamil.
+- `Gender.fromText` to normalize free-text gender input in English, Sinhala or Tamil.
+- Data sources section in the README, contributing guide, security policy and issue templates.
+
+### Changed
+- All validators ignore zero-width characters, byte-order marks and soft hyphens, and treat no-break
+  spaces as ordinary spaces. Pasted values that used to be rejected are now accepted.
+- Inputs longer than 1,024 characters are rejected.
+
 ## [0.2.0] - 2026-10-16
 
 ### Added

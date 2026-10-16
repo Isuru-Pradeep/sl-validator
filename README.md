@@ -11,9 +11,11 @@ Zero-dependency Java library for validating and parsing **Sri Lankan NIC numbers
 - ✅ Extract date of birth, gender and age from a NIC, and cross-check it against form fields
 - ✅ Convert NICs between old and new formats
 - ✅ Validate mobile and landline numbers in any common format, and find a landline's district
-- ✅ Normalize phone numbers to E.164 (`+94771234567`) or local (`0771234567`)
+- ✅ Normalize phone numbers to E.164 (`+94771234567`), local (`0771234567`) or display form (`077 123 4567`)
 - ✅ Parse vehicle number plates (`WP CAB-1234`, `KA-1234`, `15-1234`)
 - ✅ Validate postal codes, with province and district reference data
+- ✅ Look up provinces, districts and gender from English, Sinhala or Tamil text
+- 🛡️ Safe on pasted input: ignores invisible characters and rejects oversized values
 - ☕ Java 8+, no runtime dependencies
 
 ## Installation
@@ -87,6 +89,13 @@ Nic.toOldFormat("198534000937", 'V'); // "853400937V"
 
 `Nic.parse` throws `InvalidNicException` (an `IllegalArgumentException`) with a reason when the input is invalid.
 
+Birth dates after today are rejected. To get results that don't depend on the day the code runs, e.g. in tests, pass the date to treat as today:
+
+```java
+Nic.isValid("201016700000", LocalDate.of(2010, 6, 15)); // true
+Nic.parse("201016700000", LocalDate.of(2010, 6, 14));   // throws: birth date is in the future
+```
+
 ### Phone
 ```java
 Phone.isValid("077 123 4567");         // true
@@ -97,6 +106,8 @@ Phone.districtOf("0812234567");        // KANDY (null for mobiles)
 
 Phone.toE164("077 123 4567");          // "+94771234567"
 Phone.toLocal("0094771234567");        // "0771234567"
+Phone.toNational("+94771234567");      // "077 123 4567"
+Phone.toInternational("0771234567");   // "+94 77 123 4567"
 ```
 
 Accepted input forms: `0771234567`, `+94771234567`, `0094771234567`, `94771234567`, `771234567`, with any spaces, dashes, dots or parentheses.
@@ -129,8 +140,31 @@ PostalCode.normalize(" 00700 ");       // "00700"
 ```java
 District.KANDY.getProvince();          // CENTRAL
 Province.fromCode("NW");               // NORTH_WESTERN
-Province.SABARAGAMUWA.getDisplayName();// "Sabaragamuwa"
+
+Province.fromName("Western Province"); // WESTERN
+Province.fromName("බස්නාහිර පළාත");    // WESTERN
+District.fromName("நுவரெலியா");        // NUWARA_ELIYA
+District.fromName("nuwara eliya");     // NUWARA_ELIYA
+
+District.KANDY.getSinhalaName();       // "මහනුවර"
+District.KANDY.getTamilName();         // "கண்டி"
 ```
+
+`fromName` ignores case, spacing and a trailing word for "province" or "district" in any of the three languages. Sinhala names match whether or not they were typed with zero-width joiners.
+
+### Gender
+```java
+Gender.fromText("M");                  // MALE
+Gender.fromText("පිරිමි");             // MALE
+Gender.fromText("பெண்");               // FEMALE
+Gender.fromText("other");              // null
+```
+
+## Input rules
+
+- Surrounding whitespace is ignored. Zero-width characters, byte-order marks and soft hyphens, which often come along with copy and paste, are removed, and no-break spaces count as ordinary spaces.
+- Inputs longer than 1,024 characters are rejected, never truncated.
+- `isValid`, `typeOf`, `districtOf` and the `from...` lookups never throw on bad input. They return `false` or `null`. `parse` and the `to...` conversions throw an `IllegalArgumentException` with a reason.
 
 ## How NIC numbers work
 
@@ -150,9 +184,21 @@ Province.SABARAGAMUWA.getDisplayName();// "Sabaragamuwa"
 - Validation is structural: it cannot tell whether a number, plate or postal code is actually issued or in service.
 - Postal codes are checked for format only, not looked up against the Sri Lanka Post directory.
 
+## Data sources
+
+| Data | Source | Notes |
+|------|--------|-------|
+| NIC format | No official specification published | Based on widely documented public guidance. The check digit is not verified. |
+| Mobile prefixes, area codes | [TRCSL National Numbering Plan](https://www.trc.gov.lk/pages_e.php?id=121) | Area code to district is mapped by exchange town. |
+| Postal codes | [Sri Lanka Post](https://slpost.gov.lk/information/postcodes/) | Five-digit format only. |
+| Vehicle plates | [Vehicle registration plates of Sri Lanka](https://en.wikipedia.org/wiki/Vehicle_registration_plates_of_Sri_Lanka) | Province codes and series formats. |
+| Provinces, districts | [Department of Census and Statistics, Census 2024 preliminary report](https://www.statistics.gov.lk/Resource/en/Population/CPH_2024/Preliminary_Report.pdf) | 9 provinces and 25 districts. Sinhala and Tamil names are widely used spellings; corrections are welcome. |
+
+Found something wrong or outdated? Please open a [data correction issue](https://github.com/Isuru-Pradeep/sl-validator/issues/new?template=data_correction.yml) with a link to the source.
+
 ## Contributing
 
-Issues and pull requests are welcome. Run the tests with:
+Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md). Run the tests with:
 
 ```bash
 ./mvnw verify      # Windows: mvnw.cmd verify

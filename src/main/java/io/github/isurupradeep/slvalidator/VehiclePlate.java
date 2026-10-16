@@ -51,10 +51,11 @@ public final class VehiclePlate {
     }
 
     private static VehiclePlateInfo tryParse(String plate) {
-        if (plate == null) {
+        String cleaned = Inputs.clean(plate);
+        if (cleaned == null) {
             return null;
         }
-        String v = plate.trim().toUpperCase(Locale.ROOT).replaceAll("\\s+", " ").replaceAll(" ?- ?", "-");
+        String v = cleaned.toUpperCase(Locale.ROOT).replaceAll("\\s+", " ").replaceAll(" ?- ?", "-");
 
         Matcher m = LETTERS.matcher(v);
         if (m.matches()) {

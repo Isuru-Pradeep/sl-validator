@@ -3,6 +3,7 @@ package io.github.isurupradeep.slvalidator;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -32,8 +33,20 @@ public final class Nic {
      * @return true if the value is a structurally valid NIC with a real birth date not in the future
      */
     public static boolean isValid(String nic) {
+        return isValid(nic, LocalDate.now());
+    }
+
+    /**
+     * Checks whether a value is a valid NIC number, treating {@code today} as the current date.
+     * Use this for results that do not change with the day the code runs, e.g. in tests.
+     *
+     * @param nic the NIC number, old or new format
+     * @param today the date after which a birth date counts as being in the future
+     * @return true if the value is a structurally valid NIC with a birth date not after {@code today}
+     */
+    public static boolean isValid(String nic, LocalDate today) {
         try {
-            parse(nic);
+            parse(nic, today);
             return true;
         } catch (InvalidNicException e) {
             return false;
@@ -41,13 +54,27 @@ public final class Nic {
     }
 
     /**
-     * Parses a NIC number, accepting surrounding whitespace and lower-case {@code v}/{@code x}.
+     * Parses a NIC number, accepting surrounding whitespace, lower-case {@code v}/{@code x} and
+     * invisible characters picked up by copy and paste.
      *
      * @param nic the NIC number, old or new format
      * @return the details encoded in the NIC
      * @throws InvalidNicException if the value is not a valid NIC
      */
     public static NicInfo parse(String nic) {
+        return parse(nic, LocalDate.now());
+    }
+
+    /**
+     * Parses a NIC number, treating {@code today} as the current date.
+     *
+     * @param nic the NIC number, old or new format
+     * @param today the date after which a birth date counts as being in the future
+     * @return the details encoded in the NIC
+     * @throws InvalidNicException if the value is not a valid NIC
+     */
+    public static NicInfo parse(String nic, LocalDate today) {
+        Objects.requireNonNull(today, "today");
         String value = normalize(nic);
         int year;
         int day;
@@ -78,7 +105,7 @@ public final class Nic {
         }
 
         LocalDate dob = toDate(year, day);
-        if (dob.isAfter(LocalDate.now())) {
+        if (dob.isAfter(today)) {
             throw new InvalidNicException("Birth date " + dob + " is in the future");
         }
         return new NicInfo(value, format, dob, gender, serial);
@@ -156,7 +183,11 @@ public final class Nic {
         if (nic == null) {
             throw new InvalidNicException("NIC must not be null");
         }
-        return nic.trim().replace(" ", "").toUpperCase(Locale.ROOT);
+        String value = Inputs.clean(nic);
+        if (value == null) {
+            throw new InvalidNicException("NIC is longer than " + Inputs.MAX_LENGTH + " characters");
+        }
+        return value.replace(" ", "").toUpperCase(Locale.ROOT);
     }
 
     private static LocalDate toDate(int year, int dayOfYear) {

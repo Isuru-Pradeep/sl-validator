@@ -23,7 +23,8 @@ public final class PostalCode {
      * @return true if the value is exactly five digits
      */
     public static boolean isValid(String code) {
-        return code != null && CODE.matcher(code.trim()).matches();
+        String c = Inputs.clean(code);
+        return c != null && CODE.matcher(c).matches();
     }
 
     /**
@@ -37,6 +38,6 @@ public final class PostalCode {
         if (!isValid(code)) {
             throw new IllegalArgumentException("Not a valid Sri Lankan postal code: " + code);
         }
-        return code.trim();
+        return Inputs.clean(code);
     }
 }
