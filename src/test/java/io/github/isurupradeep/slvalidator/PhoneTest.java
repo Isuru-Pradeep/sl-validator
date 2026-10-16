@@ -2,6 +2,7 @@ package io.github.isurupradeep.slvalidator;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -72,6 +73,36 @@ class PhoneTest {
     void acceptsEveryAreaCode(String areaCode) {
         assertEquals(PhoneType.LANDLINE, Phone.typeOf("0" + areaCode + "2345678"));
         assertEquals(PhoneType.LANDLINE, Phone.typeOf("+94" + areaCode + "2345678"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "0112345678,   COLOMBO",
+            "0312234567,   GAMPAHA",
+            "0362234567,   COLOMBO",
+            "+94812234567, KANDY",
+            "0512234567,   NUWARA_ELIYA",
+            "0672234567,   AMPARA",
+            "0912234567,   GALLE"
+    })
+    void findsDistrictOfLandline(String phone, District district) {
+        assertEquals(district, Phone.districtOf(phone));
+    }
+
+    @Test
+    void everyAreaCodeHasADistrict() {
+        String[] codes = {"11", "21", "23", "24", "25", "26", "27", "31", "32", "33", "34", "35", "36",
+                "37", "38", "41", "45", "47", "51", "52", "54", "55", "57", "63", "65", "66", "67", "81", "91"};
+        for (String code : codes) {
+            assertNotNull(Phone.districtOf("0" + code + "2345678"), code);
+        }
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"0771234567", "0991234567", "abc"})
+    void districtIsNullForMobileAndInvalid(String phone) {
+        assertNull(Phone.districtOf(phone));
     }
 
     @ParameterizedTest

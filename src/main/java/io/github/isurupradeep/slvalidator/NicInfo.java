@@ -5,6 +5,8 @@ import java.time.Period;
 
 /** Immutable result of parsing a valid NIC number. */
 public final class NicInfo {
+    private static final int ADULT_AGE = 18;
+
     private final String nic;
     private final NicFormat format;
     private final LocalDate dateOfBirth;
@@ -71,6 +73,25 @@ public final class NicInfo {
      */
     public int getAge() {
         return getAge(LocalDate.now());
+    }
+
+    /**
+     * Whether the holder is 18 or older on the given date.
+     *
+     * @param onDate the date to check on
+     * @return true if the holder has turned 18 by {@code onDate}
+     */
+    public boolean isAdult(LocalDate onDate) {
+        return getAge(onDate) >= ADULT_AGE;
+    }
+
+    /**
+     * Whether the holder is 18 or older today.
+     *
+     * @return true if the holder has turned 18
+     */
+    public boolean isAdult() {
+        return isAdult(LocalDate.now());
     }
 
     @Override
