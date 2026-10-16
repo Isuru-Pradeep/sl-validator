@@ -4,6 +4,10 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    ignore:
+      # JUnit 6 requires Java 17; tests must keep running on Java 8
+      - dependency-name: org.junit.jupiter:*
+        update-types: [version-update:semver-major]
   - package-ecosystem: github-actions
     directory: /
     schedule:
