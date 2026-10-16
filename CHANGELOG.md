@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-10-16
+
+### Changed
+- First release published to Maven Central (`io.github.isuru-pradeep:sl-validator`).
+  No code changes from 0.1.0, which was released through JitPack only.
+
 ## [0.1.0] - 2026-10-16
 
 ### Added
@@ -15,4 +21,5 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Accepts `+94`, `0094`, `94`, `0` and bare 9-digit phone input with common separators.
 - Java 8+ support with no runtime dependencies.
 
+[0.1.1]: https://github.com/Isuru-Pradeep/sl-validator/releases/tag/v0.1.1
 [0.1.0]: https://github.com/Isuru-Pradeep/sl-validator/releases/tag/v0.1.0

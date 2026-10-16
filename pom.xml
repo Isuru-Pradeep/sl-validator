@@ -6,7 +6,7 @@
 
     <groupId>io.github.isuru-pradeep</groupId>
     <artifactId>sl-validator</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <packaging>jar</packaging>
 
     <name>SL Validator</name>
